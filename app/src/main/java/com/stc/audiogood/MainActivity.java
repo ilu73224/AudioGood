@@ -70,6 +70,7 @@ public class MainActivity extends Activity {
 
         Bwork.setSoundEffectsEnabled(false);
         Bhome.setSoundEffectsEnabled(false);
+        //commit test
     }
 
     public Handler handler = new Handler();
