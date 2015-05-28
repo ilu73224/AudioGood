@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">AudioGood</string>
+    <string name="space">""</string>
+    <string name="work">Work</string>
+    <string name="home">Home</string>
+</resources>
