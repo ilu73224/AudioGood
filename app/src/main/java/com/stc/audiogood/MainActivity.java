@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
     public static final String PREFS_NAME = "AudioGoodPref";
     public static final String KEY_MUSIC_VOLUME = "AudioGoodPref";
 
-    private AudioManager audio=null;
+    private AudioManager audio=null;//
     private Process p=null;
 
     @Override
