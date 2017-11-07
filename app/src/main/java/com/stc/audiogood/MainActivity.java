@@ -2,10 +2,12 @@ package com.stc.audiogood;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -46,10 +48,32 @@ public class MainActivity extends Activity {
     public static final String KEY_MUSIC_VOLUME = "music_volume";
     public static final String KEY_ALARM_VOLUME = "alarm_volume";
     private AudioManager audio=null;
-
+    public static final String TAG = "AudioGood";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent i = getIntent();
+        if(i.getComponent().getShortClassName().equals(".MainActivity")) {
+            Log.d(TAG, ".MainActivity");
+            defaultAction();
+        }
+        if(i.getComponent().getShortClassName().equals(".Inside")) {
+            Log.d(TAG, ".Inside");
+            InsideAction();
+        }
+        if(i.getComponent().getShortClassName().equals(".Outside")) {
+            Log.d(TAG, ".Outside");
+            OutsideAction();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        finish();
+        super.onResume();
+    }
+
+    private void defaultAction() {
         audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         if(audio.getRingerMode() != AudioManager.RINGER_MODE_SILENT){
@@ -71,9 +95,19 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        finish();
-        super.onResume();
+    private void InsideAction() {
+        audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        audio.setStreamVolume(AudioManager.STREAM_MUSIC, 1, 0);
+        audio.setStreamVolume(AudioManager.STREAM_ALARM, 1, 0);
+        audio.setStreamVolume(AudioManager.STREAM_RING, 1, 0);
+    }
+
+    private void OutsideAction() {
+        audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        audio.setStreamVolume(AudioManager.STREAM_MUSIC, audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC) - 2, 0);
+        audio.setStreamVolume(AudioManager.STREAM_ALARM, audio.getStreamMaxVolume(AudioManager.STREAM_ALARM) - 2, 0);
+        audio.setStreamVolume(AudioManager.STREAM_RING, audio.getStreamMaxVolume(AudioManager.STREAM_RING) - 2, 0);
     }
 }
