@@ -2,4 +2,5 @@
     <string name="app_name">AudioGood</string>
     <string name="inside">AG_Inside</string>
     <string name="outside">AG_Outside</string>
+    <string name="default_">AG_Default</string>
 </resources>
