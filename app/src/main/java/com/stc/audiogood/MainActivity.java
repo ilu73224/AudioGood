@@ -5,15 +5,10 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 public class MainActivity extends Activity {
     /*
@@ -100,6 +95,7 @@ public class MainActivity extends Activity {
     public static final int INSIDE_STREAM_MUSIC_VOLUME = 2;
     public static final int INSIDE_STREAM_ALARM_VOLUME = 2;
     public static final int INSIDE_STREAM_RING_VOLUME = 1;
+    public static final int FLAG_AUDIO_MODES = AudioManager.FLAG_SHOW_UI;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -141,68 +137,46 @@ public class MainActivity extends Activity {
     }
 
     private void defaultAction() {
-        //SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        if(audio.getRingerMode() != AudioManager.RINGER_MODE_SILENT){
-            /*
-            int music_volume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-            int alarm_volume = audio.getStreamVolume(AudioManager.STREAM_ALARM);
-            int ring_volume = audio.getStreamVolume(AudioManager.STREAM_RING);
-            Log.d(TAG, "SAVING: music_volume = "+music_volume+
-                    ", alarm_volume = "+alarm_volume+
-                    ", ring_volume = "+ring_volume);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putInt(KEY_MUSIC_VOLUME, music_volume);
-            editor.putInt(KEY_ALARM_VOLUME, alarm_volume);
-            editor.putInt(KEY_RING_VOLUME, ring_volume);
-            editor.commit();
-            audio.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_SHOW_UI);
-            audio.setStreamVolume(AudioManager.STREAM_ALARM, 1, AudioManager.FLAG_SHOW_UI);
-            audio.setStreamVolume(AudioManager.STREAM_RING, 0, AudioManager.FLAG_SHOW_UI);
-            */
-            audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-        }else{
-            audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-            /*
-            int music_volume = settings.getInt(KEY_MUSIC_VOLUME, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_MUSIC]);
-            int alarm_volume = settings.getInt(KEY_ALARM_VOLUME, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_ALARM]);
-            int ring_volume = settings.getInt(KEY_RING_VOLUME, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_RING]);
-            Log.d(TAG, "LOADING: music_volume = "+music_volume+
-                    ", alarm_volume = "+alarm_volume+
-                    ", ring_volume = "+ring_volume);
-            audio.setStreamVolume(AudioManager.STREAM_MUSIC, music_volume, AudioManager.FLAG_SHOW_UI);
-            audio.setStreamVolume(AudioManager.STREAM_ALARM, alarm_volume, AudioManager.FLAG_SHOW_UI);
-            audio.setStreamVolume(AudioManager.STREAM_RING, ring_volume, AudioManager.FLAG_SHOW_UI);
-             */
-        }
+        audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
     }
 
     private void InsideAction() {
         audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-        audio.setStreamVolume(AudioManager.STREAM_MUSIC, INSIDE_STREAM_MUSIC_VOLUME, AudioManager.FLAG_SHOW_UI);
-        audio.setStreamVolume(AudioManager.STREAM_ALARM, INSIDE_STREAM_ALARM_VOLUME, AudioManager.FLAG_SHOW_UI);
-        audio.setStreamVolume(AudioManager.STREAM_RING, INSIDE_STREAM_RING_VOLUME, AudioManager.FLAG_SHOW_UI);
+        audio.setStreamVolume(AudioManager.STREAM_MUSIC, INSIDE_STREAM_MUSIC_VOLUME, FLAG_AUDIO_MODES);
+        audio.setStreamVolume(AudioManager.STREAM_ALARM, INSIDE_STREAM_ALARM_VOLUME, FLAG_AUDIO_MODES);
+        audio.setStreamVolume(AudioManager.STREAM_RING, INSIDE_STREAM_RING_VOLUME, FLAG_AUDIO_MODES);
     }
 
     private void OutsideAction() {
         audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-        audio.setStreamVolume(AudioManager.STREAM_MUSIC, audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_SHOW_UI);
-        audio.setStreamVolume(AudioManager.STREAM_ALARM, audio.getStreamMaxVolume(AudioManager.STREAM_ALARM), AudioManager.FLAG_SHOW_UI);
-        audio.setStreamVolume(AudioManager.STREAM_RING, audio.getStreamMaxVolume(AudioManager.STREAM_RING), AudioManager.FLAG_SHOW_UI);
+        audio.setStreamVolume(AudioManager.STREAM_MUSIC, audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC), FLAG_AUDIO_MODES);
+        audio.setStreamVolume(AudioManager.STREAM_ALARM, audio.getStreamMaxVolume(AudioManager.STREAM_ALARM), FLAG_AUDIO_MODES);
+        audio.setStreamVolume(AudioManager.STREAM_RING, audio.getStreamMaxVolume(AudioManager.STREAM_RING), FLAG_AUDIO_MODES);
     }
 
     private void defaultSettingAction() {
         audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-        audio.setStreamVolume(AudioManager.STREAM_MUSIC, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_MUSIC], AudioManager.FLAG_SHOW_UI);
-        audio.setStreamVolume(AudioManager.STREAM_ALARM, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_ALARM], AudioManager.FLAG_SHOW_UI);
-        audio.setStreamVolume(AudioManager.STREAM_RING, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_RING], AudioManager.FLAG_SHOW_UI);
+        audio.setStreamVolume(AudioManager.STREAM_MUSIC, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_MUSIC], FLAG_AUDIO_MODES);
+        audio.setStreamVolume(AudioManager.STREAM_ALARM, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_ALARM], FLAG_AUDIO_MODES);
+        audio.setStreamVolume(AudioManager.STREAM_RING, DEFAULT_STREAM_VOLUME[AudioManager.STREAM_RING], FLAG_AUDIO_MODES);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        // Check which request we're responding to
+        if (requestCode == PICK_CONTACT_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "requestCode = PICK_CONTACT_REQUEST" + "resultCode = RESULT_OK");
+            } else {
+                Log.d(TAG, "requestCode = PICK_CONTACT_REQUEST" + "resultCode = " + resultCode);
+            }
+        } else {
+            Log.d(TAG, "requestCode = " + requestCode + "resultCode = " + resultCode);
+        }
     }
 
-    private void printAudioSetting(){
+    private void printAudioSetting() {
         printByIndex("AudioManager.STREAM_MUSIC",AudioManager.STREAM_MUSIC);
         printByIndex("AudioManager.STREAM_ALARM",AudioManager.STREAM_ALARM);
         printByIndex("AudioManager.STREAM_RING",AudioManager.STREAM_RING);
